@@ -3,70 +3,70 @@ include {
 }
 
 terraform {
-  source = "git::ssh://git@gitlab.com/nielsen-media/platforms/tools-devops/apaas/kubernetes-mesh/eks-base.git//resource?ref=9.0.0"
+  source = "git::ssh://git@gitlab.com/redacted-org-x7k/platform-iac/cluster-modules/eks-base.git//resource?ref=9.0.0"
 }
 
 locals {
   region                = "us-east-1"
   eks_version           = "1.33"
-  env                   = "dev-qa-uat"
-  vpc_id                = "vpc-0bbcc02b96d05c78c"
-  amd_ami_id            = "ami-033f6caef470f7011"
-  arm_ami_id            = "ami-057b8a3abd94810c2"
+  env                   = "env-d4q8-uat"
+  vpc_id                = "vpc-01d2c3b4a5e6f7890"
+  amd_ami_id            = "ami-0a1c3e5f7b9d2f4a6"
+  arm_ami_id            = "ami-0b2d4f6a8c1e3a5d7"
   subnets               = [
-    "subnet-0db2ffecddbd7a25d", // Private subnet
-    "subnet-0b091b3ed8a11e5fa", // Private subnet
-    "subnet-02ca0a6cac30cded3"  // Private subnet
+    "subnet-0aa1bb2cc3dd4ee55", // Private subnet
+    "subnet-0667aa8bb9cc0dd11", // Private subnet
+    "subnet-0223cc4dd5ee6ff77"  // Private subnet
   ]
-  kms_cmk_arn           = "arn:aws:kms:us-east-1:324683867184:key/86a1e1b1-4114-43e3-967c-7e7330c8e94c"
+  kms_cmk_arn           = "arn:aws:kms:us-east-1:777788889999:key/1b2c3d4e-5f6a-4789-b1c2-d3e4f5a6b7c8"
 }
 
 inputs = {
   aws_region          = local.region
   vpc_id              = local.vpc_id
-  application_name    = "MBO-RESOLUTION"
+  application_name    = "APP-RND-D4"
   resource_id         = local.env
   eks_admin_arns      = {
-    "Admin"    = "arn:aws:iam::374782863296:role/MPTDEVOPS-ADMIN", 
-    "DevAdmin" = "arn:aws:iam::324683867184:role/DEVADMIN"
+    "Admin"    = "arn:aws:iam::777788889999:role/PLATFORM-ADMIN-RND",
+    "DevAdmin" = "arn:aws:iam::777788889999:role/DEV-ADMIN-RND"
   }
   kms_cmk_arn         = local.kms_cmk_arn
   ami_id              = local.arm_ami_id
   eks_version         = local.eks_version
-  stack               = "MBO-RESOLUTION"
+  stack               = "APP-RND-D4"
 
   tags = {
-    ApplicationName  = "MBO-RESOLUTION"
-    Stack            = "MBO-RESOLUTION-EKS"
-    Application      = "EKS"
+    ApplicationName  = "APP-RND-D4"
+    Stack            = "APP-RND-D4-EKS"
+    Application      = "EKS-RND"
     Version          = local.eks_version
-    Owner            = "Resolution"
-    DistributionList = "mboresolutionteam@nielsen.com"
+    Owner            = "team-rnd-d4"
+    DistributionList = "team-rnd-d4@example.com"
     Region           = local.region
     Environment      = local.env
-    CostCenter       = "7501303"
-    Product          = "MBO"
+    CostCenter       = "4205179"
+    Product          = "PRD-RND"
   }
    
   map_roles = [
     {
-      rolearn  = "arn:aws:iam::324683867184:role/cnc_airflow_dag_assumption_role"
-      username = "airflow"
+      rolearn  = "arn:aws:iam::777788889999:role/automation-runner-rnd"
+      username = "svc-automation-rnd"
       groups   = ["system:masters"]
     },
     {
-      rolearn  = "arn:aws:iam::324683867184:role/CREDITING-DEVELOPER"
-      username = "resolution-developer"
+      rolearn  = "arn:aws:iam::777788889999:role/ENGINEERING-DEVELOPER-RND"
+      username = "team-developer-rnd"
       groups   = ["developer"]
     },
     {
-      rolearn  = "arn:aws:iam::324683867184:role/CREDITING-DEVADMIN"
-      username = "resolution-devadmin"
+      rolearn  = "arn:aws:iam::777788889999:role/ENGINEERING-DEVADMIN-RND"
+      username = "team-devadmin-rnd"
       groups   = ["developer"]
     },
     {
-      rolearn  = "arn:aws:iam::324683867184:role/CNC-READONLY"
-      username = "resolution-readonly"
+      rolearn  = "arn:aws:iam::777788889999:role/PLATFORM-READONLY-RND"
+      username = "team-readonly-rnd"
       groups   = ["readonly"]
     }
   ]
@@ -93,7 +93,7 @@ inputs = {
       desired_capacity                 = 2
       max_size                         = 15
       min_size                         = 2
-      node_labels                      = "type=worker,addons=mbo-addons-m5xlarge,worker=m5xlarge,worker=mbo-loki,kubernetes.io/arch=amd64,kubernetes.io/os=linux"
+      node_labels                      = "type=worker,addons=addons-rnd-m5xlarge,worker=m5xlarge,worker=ops-logs-rnd,kubernetes.io/arch=amd64,kubernetes.io/os=linux"
       on_demand_base_capacity          = "0"
       on_demand_percentage_above_base_capacity = "0"
       spot_allocation_strategy         = "price-capacity-optimized"
@@ -109,7 +109,7 @@ inputs = {
       desired_capacity                 = 1
       max_size                         = 50
       min_size                         = 0
-      node_labels                      = "type=worker,addons=mbo-addons,worker=xlarge,worker=mbo-loki,kubernetes.io/arch=arm64,kubernetes.io/os=linux"
+      node_labels                      = "type=worker,addons=addons-rnd,worker=xlarge,worker=ops-logs-rnd,kubernetes.io/arch=arm64,kubernetes.io/os=linux"
       max_pods                         = "50"
       override_instance_types          = ["r7g.xlarge", "r6gd.xlarge", "r6a.xlarge", "r5a.xlarge", "r5.xlarge", "r5d.xlarge","m7g.xlarge", "m5.xlarge"]      
       on_demand_base_capacity          = "0"

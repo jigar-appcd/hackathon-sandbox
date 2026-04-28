@@ -3,47 +3,47 @@ include {
 }
 
 terraform {
-  source = "git::ssh://git@gitlab.com/nielsen-media/platforms/tools-devops/apaas/kubernetes-mesh/eks-base.git//resource?ref=9.0.0"
+  source = "git::ssh://git@gitlab.com/redacted-org-x7k/platform-iac/cluster-modules/eks-base.git//resource?ref=9.0.0"
 }
 
 locals {
   region        = "us-east-1"
   eks_version   = "1.33"
-  env           = "prod-reprocess"
-  vpc_id        = "vpc"
-  amd_ami_id    = "ami-0"
-  arm_ami_id    = "ami-1"
+  env           = "env-p7k3-reprocess"
+  vpc_id        = "vpc-0a6d2f4b8c1e97350"
+  amd_ami_id    = "ami-0b4e6c8a1d3f5e7a9"
+  arm_ami_id    = "ami-0d9a7c5e3b1f4a6c8"
   subnets       = [
-    "subnet-id",
-    "subnet-id2"
+    "subnet-01ab23cd45ef67890",
+    "subnet-09fe87dc65ba43210"
   ]
-  kms_cmk_arn   = "arn:aws:kms:us-east-1:accountid:key/423da438-4faf-491d-872c-1944e1462877"
+  kms_cmk_arn   = "arn:aws:kms:us-east-1:444455556666:key/2a3b4c5d-6e7f-4819-a2b3-c4d5e6f7a8b9"
 
   // Define the global tags here in the locals block
   tags = {
-    Application      = "Resolution"
-    Process          = "Resolution"
-    Stack            = "MBO-RESOLUTION-EKS"
-    Application      = "EKS"
+    Application      = "team-rnd-z9"
+    Process          = "process-rnd-z9"
+    Stack            = "APP-RND-Z9-EKS"
+    Application      = "EKS-RND"
     Version          = local.eks_version
-    Owner            = "Resolution"
-    DistributionList = "mailid"
+    Owner            = "owner-rnd-z9"
+    DistributionList = "alerts-rnd-z9@example.com"
     Region           = local.region
     Environment      = local.env
-    CostCenter       = "7501303"
-    Product          = "MBO"
+    CostCenter       = "5310248"
+    Product          = "PRD-RND"
   }
 }
 
 inputs = {
   aws_region        = local.region
   vpc_id            = local.vpc_id
-  application_name  = "MBO-RESOLUTION"
+  application_name  = "APP-RND-Z9"
   resource_id       = local.env
   service_ipv4_cidr = "10.100.0.0/16"
   eks_admin_arns    = {
-    "Admin"    = "arn:aws:iam::accountid:role/MPTDEVOPS-ADMIN",
-    "DevAdmin" = "arn:aws:iam::accountid:role/DEVADMIN"
+    "Admin"    = "arn:aws:iam::444455556666:role/PLATFORM-ADMIN-RND",
+    "DevAdmin" = "arn:aws:iam::444455556666:role/DEV-ADMIN-RND"
   }
   kms_cmk_arn       = local.kms_cmk_arn
   ami_id            = local.arm_ami_id
@@ -52,18 +52,18 @@ inputs = {
 
   map_roles = [
     {
-      rolearn  = "arn:aws:iam::accountid:role/cnc_airflow_prod_dag_assumption_role"
-      username = "airflow"
+      rolearn  = "arn:aws:iam::444455556666:role/automation-prod-runner-rnd"
+      username = "svc-automation-prod-rnd"
       groups   = ["system:masters"]
     },
     {
-      rolearn  = "arn:aws:iam::accountid:role/EKS-MANAGED-ROLE"
-      username = "resolution-developer"
+      rolearn  = "arn:aws:iam::444455556666:role/EKS-MANAGED-ROLE-RND"
+      username = "team-developer-rnd"
       groups   = ["developer"]
     },
     {
-      rolearn  = "arn:aws:iam::accountid:role/CNC-READONLY"
-      username = "resolution-readonly"
+      rolearn  = "arn:aws:iam::444455556666:role/PLATFORM-READONLY-RND"
+      username = "team-readonly-rnd"
       groups   = ["readonly"]
     }
   ]
@@ -81,8 +81,8 @@ inputs = {
       max_pods         = 25
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
@@ -100,8 +100,8 @@ inputs = {
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
@@ -119,14 +119,14 @@ inputs = {
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
     worker-large-ondemand = {
       group_id         = "worker-large-ondemand"
-      subnets          = ["subnet-id"]
+      subnets          = ["subnet-0aa11bb22cc33dd44"]
       instance_type    = "r5.8xlarge"
       desired_capacity = 0
       max_size         = 40
@@ -138,14 +138,14 @@ inputs = {
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
     worker-xlarge-ondemand = {
       group_id         = "worker-xlarge-ondemand"
-      subnets          = ["subnet-id"]
+      subnets          = ["subnet-05566aa77bb88cc99"]
       instance_type    = "r5.24xlarge"
       desired_capacity = 0
       max_size         = 90
@@ -157,8 +157,8 @@ inputs = {
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
@@ -169,14 +169,14 @@ inputs = {
       desired_capacity = 0
       max_size         = 50
       min_size         = 0
-      node_labels      = "type=worker,worker=mbo-loki,kubernetes.io/arch=arm64,kubernetes.io/os=linux"
-      node_taints      = "worker=mbo-loki:NoSchedule"
+      node_labels      = "type=worker,worker=ops-logs-rnd,kubernetes.io/arch=arm64,kubernetes.io/os=linux"
+      node_taints      = "worker=ops-logs-rnd:NoSchedule"
       max_pods         = "50"
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.arm_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
     
@@ -187,15 +187,15 @@ inputs = {
       desired_capacity = 0
       max_size         = 2
       min_size         = 1
-      node_labels      = "type=worker,addons=mbo-addons-m5xlarge,worker=m5xlarge,kubernetes.io/arch=amd64,kubernetes.io/os=linux"
+      node_labels      = "type=worker,addons=addons-rnd-m5xlarge,worker=m5xlarge,kubernetes.io/arch=amd64,kubernetes.io/os=linux"
       node_taints      = "worker=admin:NoSchedule"
       max_pods         = "50"
       override_instance_types                  = ["r6i.xlarge", "r5.xlarge", "r7i.xlarge"]
       on_demand_allocation_strategy            = "lowest-price"
       ami_id           = local.amd_ami_id
       tags = merge(local.tags, {
-        Application = "Resolution",
-        Process     = "Resolution"
+        Application = "team-rnd-z9",
+        Process     = "process-rnd-z9"
       })
     }
   }
