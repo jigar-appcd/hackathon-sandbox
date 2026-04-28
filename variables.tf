@@ -1,4 +1,3 @@
-
 variable "aws_region" {
   type    = string
   default = "us-east-1"
@@ -76,12 +75,12 @@ variable "tags" {
 variable "cluster_endpoint_public_access" {
   type        = bool
   description = "Indicates whether or not the Amazon EKS public API server endpoint is enabled."
-  default     = true
+  default     = false
 }
 
 variable "public_access_cidrs" {
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = []
   description = "List of cidr blocks that can access public endpoint"
 }
 
@@ -156,13 +155,13 @@ variable "map_roles" {
 variable "lt_metadata_options" {
   type = object({
     http_endpoint               = optional(string, "enabled")
-    http_tokens                 = optional(string, "optional")
+    http_tokens                 = optional(string, "required")
     http_put_response_hop_limit = optional(number, 1)
     instance_metadata_tags      = optional(string, "disabled")
   })
   default = {
     http_endpoint               = "enabled"
-    http_tokens                 = "optional"
+    http_tokens                 = "required"
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "disabled"
   }
