@@ -32,7 +32,7 @@ resource "aws_launch_template" "eks_worker_template" {
 
   metadata_options {
     http_endpoint               = var.lt_metadata_options.http_endpoint
-    http_tokens                 = var.lt_metadata_options.http_tokens
+    http_tokens                 = "required"
     http_put_response_hop_limit = var.lt_metadata_options.http_put_response_hop_limit
     instance_metadata_tags      = var.lt_metadata_options.instance_metadata_tags
   }

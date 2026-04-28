@@ -140,7 +140,7 @@ resource "aws_eks_cluster" "eks_master" {
 
   vpc_config {
     endpoint_private_access = true
-    endpoint_public_access  = var.cluster_endpoint_public_access
+    endpoint_public_access  = false
     security_group_ids      = [aws_security_group.eks_master.id]
     subnet_ids              = data.aws_subnets.eks_subnets.ids
     public_access_cidrs     = var.public_access_cidrs
