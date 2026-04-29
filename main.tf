@@ -81,6 +81,7 @@ resource "aws_security_group" "eks_master" {
   vpc_id      = var.vpc_id
 
   egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -120,6 +121,7 @@ data "aws_subnets" "eks_subnets" {
 resource "aws_cloudwatch_log_group" "eks_cloudwatch_log" {
   name              = "/aws/eks/${local.resource_name}/cluster"
   retention_in_days = var.cloudwatch_retention
+  kms_key_id = var.kms_cmk_arn
 }
 
 # EKS Cluster
@@ -160,6 +162,10 @@ resource "aws_eks_cluster" "eks_master" {
   ]
 
   tags = local.resource_tags
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 ## Adding eks addons
@@ -230,6 +236,10 @@ POLICY
 
   tags = local.resource_tags
 
+  lifecycle {
+    prevent_destroy = true
+  }
+
 }
 
 data "aws_iam_role" "eks_worker_role" {
@@ -247,8 +257,8 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
   role       = local.worker_role_name
 }
 
-resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryFullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
+resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = local.worker_role_name
 }
 
@@ -360,6 +370,7 @@ resource "aws_security_group" "eks_worker" {
   vpc_id      = var.vpc_id
 
   egress {
+    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
