@@ -8,10 +8,13 @@
                 "arn:aws:s3:::*${lower(application_name)}*/*"
             ],
             "Action": [
-                "s3:Get*",
-                "s3:List*",
-                "s3:Put*",
-                "s3:Delete*"
+                "s3:GetObject",
+                "s3:GetObjectVersion",
+                "s3:GetBucketLocation",
+                "s3:ListBucket",
+                "s3:ListBucketVersions",
+                "s3:PutObject",
+                "s3:DeleteObject"
             ]
         },
         {
@@ -27,7 +30,11 @@
 			"Action": [
 				"ec2:CreateTags"
 			],
-			"Resource": "*"
+			"Resource": [
+                "arn:aws:ec2:*:*:instance/*",
+                "arn:aws:ec2:*:*:volume/*",
+                "arn:aws:ec2:*:*:network-interface/*"
+            ]
 		}
     ]
 }
