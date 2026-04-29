@@ -1,0 +1,7 @@
+{
+  "app_stack_name": "eks-base",
+  "iac_type": "Terraform",
+  "provider": "aws",
+  "multi_env": true,
+  "exporter": "terraform"
+}
