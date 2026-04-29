@@ -2,7 +2,7 @@
 
 resource "aws_iam_role" "fargate" {
   count = var.fargate_enabled ? 1 : 0
-  name = "${local.resource_name}-fargate"
+  name  = "${local.resource_name}-fargate"
 
   assume_role_policy = <<EOF
 {
@@ -19,13 +19,19 @@ resource "aws_iam_role" "fargate" {
 }
 EOF
 
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+    Project     = var.cluster_name
+  }
+
 }
 
 #https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AmazonEKSFargatePodExecutionRolePolicy.html
 resource "aws_iam_role_policy_attachment" "lambda" {
-  count = var.fargate_enabled ? 1 : 0
+  count      = var.fargate_enabled ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
-  role = aws_iam_role.fargate[0].id
+  role       = aws_iam_role.fargate[0].id
 }
 
 data "aws_security_group" "eks_security_group" {
@@ -36,7 +42,7 @@ data "aws_security_group" "eks_security_group" {
 }
 
 resource "aws_security_group_rule" "eks_worker_ingress_fargate" {
-  count = var.fargate_enabled ? 1 : 0
+  count                    = var.fargate_enabled ? 1 : 0
   description              = "Allow worker Kubelets access from fargate"
   from_port                = 0
   protocol                 = "-1"
@@ -47,16 +53,30 @@ resource "aws_security_group_rule" "eks_worker_ingress_fargate" {
 }
 
 resource "aws_eks_fargate_profile" "example" {
-  count = var.fargate_enabled ? 1 : 0
+  count                  = var.fargate_enabled ? 1 : 0
   cluster_name           = aws_eks_cluster.eks_master.name
   fargate_profile_name   = "fargate"
   pod_execution_role_arn = aws_iam_role.fargate[0].arn
   subnet_ids             = data.aws_subnets.eks_subnets.ids
 
+  # Specific namespace selectors instead of wildcard "*"
   selector {
-    namespace = "*"
+    namespace = "kube-system"
     labels = {
       fargate-profile = "fargate"
     }
+  }
+
+  selector {
+    namespace = "default"
+    labels = {
+      fargate-profile = "fargate"
+    }
+  }
+
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+    Project     = var.cluster_name
   }
 }
