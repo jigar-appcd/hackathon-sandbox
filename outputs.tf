@@ -12,11 +12,13 @@ output "application_name" {
 }
 
 output "openid_arn" {
-  value = aws_iam_openid_connect_provider.eks_openid.arn
+  value     = aws_iam_openid_connect_provider.eks_openid.arn
+  sensitive = true
 }
 
 output "kms_cmk_arn" {
-  value = var.kms_cmk_arn
+  value     = var.kms_cmk_arn
+  sensitive = true
 }
 
 output "oidc_url" {
@@ -24,11 +26,13 @@ output "oidc_url" {
 }
 
 output "eks_worker_role" {
-  value = var.worker_role == "" ? aws_iam_role.eks_worker_role[0].arn : data.aws_iam_role.eks_worker_role[0].arn
+  value     = var.worker_role == "" ? aws_iam_role.eks_worker_role[0].arn : data.aws_iam_role.eks_worker_role[0].arn
+  sensitive = true
 }
 
 output "cluster_autoscaler_role" {
-  value = aws_iam_role.cluster_autoscaler.arn
+  value     = aws_iam_role.cluster_autoscaler.arn
+  sensitive = true
 }
 
 output "subnet_id" {
